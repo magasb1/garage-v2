@@ -2,7 +2,7 @@
 FROM node:lts-alpine as client-build
 WORKDIR /app/
 COPY package*.json ./
-RUN npm install --production
+RUN npm install --omit=dev
 COPY . .
 RUN npm run build
 
