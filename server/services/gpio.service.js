@@ -1,7 +1,5 @@
 
-const path = require('path')
 const Gpio = require('onoff').Gpio
-require('dotenv').config()
 
 module.exports = {
   activateRelay: async (req, res, next) => {
