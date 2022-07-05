@@ -1,10 +1,10 @@
 # Setup and build the client
-FROM node:lts-alpine as client-build
-WORKDIR /app/
-COPY package*.json ./
-RUN npm install --omit=dev
-COPY . .
-RUN npm run build
+#FROM node:lts-alpine as client-build
+#WORKDIR /app/
+#COPY package*.json ./
+#RUN npm install --omit=dev
+#COPY . .
+#RUN npm run build
 
 # Setup the server
 FROM nginx:alpine
