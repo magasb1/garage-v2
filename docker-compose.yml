@@ -1,4 +1,5 @@
 version: '3.8'
+
 services:
   server:
     container_name: server
@@ -6,9 +7,12 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./server
+    ports:
+      - 3001:3001
     volumes:
         - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
         - /sys/class/gpio:/sys/class/gpio
+        # https://stackoverflow.com/a/53626586
   client:
     container_name: client
     restart: unless-stopped
