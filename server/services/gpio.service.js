@@ -17,7 +17,7 @@ module.exports = {
       }, TIMEOUT)
     }, TIMEOUT)
 
-    return res.json({ "Status": "Ok", "Message": "Door triggered" })
+    return { "Status": "Ok", "Message": "Door triggered" }
   },
 
   sensorStatus: async (req, res, next) => {
