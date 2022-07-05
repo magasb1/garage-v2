@@ -10,6 +10,6 @@
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 WORKDIR /app/
-COPY ./build /usr/share/nginx/html
+COPY ./build /app
 
 EXPOSE 80
