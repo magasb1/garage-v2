@@ -16,8 +16,8 @@ module.exports = {
         relay.unexport()
       }, TIMEOUT)
     }, TIMEOUT)
-
-    return { "Status": "Ok", "Message": "Door triggered" }
+    res.status(200).json({ status: "ok", message: "Door triggered" })
+    next()
   },
 
   sensorStatus: async (req, res, next) => {

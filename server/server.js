@@ -1,16 +1,12 @@
 const express = require("express");
 const morgan = require('morgan')
-const apiRoutes = require("./routes/api")
-
 const app = express();
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(morgan('combined'))
-app.use("/api", apiRoutes)
 
-app.get("/", (req, res) => {
-  res.json({ message: "Hello from Express!" });
-});
-
+app.use("/api", require("./routes/api"))
 
 const HOST = process.env.HOST || "0.0.0.0";
 const PORT = process.env.PORT || 3001;
