@@ -7,7 +7,7 @@ COPY . .
 RUN npm run build
 
 # Setup the server
-FROM nginx:1.15-alpine
+FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 WORKDIR /usr/app/
 COPY --from=client-build /usr/app/build/ .
