@@ -2,13 +2,17 @@ version: '3.8'
 services:
   server:
     container_name: server
+    restart: unless-stopped
     build:
       dockerfile: Dockerfile
       context: ./server
   client:
     container_name: client
+    restart: unless-stopped
     build:
       dockerfile: Dockerfile
       context: ./client
+    ports:
+      - 3000:3000
     depends_on:
       - server
