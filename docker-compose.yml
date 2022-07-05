@@ -6,6 +6,9 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./server
+    volumes:
+        - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
+        - /sys/class/gpio:/sys/class/gpio
   client:
     container_name: client
     restart: unless-stopped
