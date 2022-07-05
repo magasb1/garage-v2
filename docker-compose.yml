@@ -8,9 +8,9 @@ services:
       dockerfile: Dockerfile
       context: ./server
     volumes:
-        - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
-        - /sys/class/gpio:/sys/class/gpio
-        # https://stackoverflow.com/a/53626586
+      - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
+      - /sys/class/gpio:/sys/class/gpio
+      # https://stackoverflow.com/a/53626586
   client:
     container_name: client
     restart: unless-stopped

@@ -1,8 +1,7 @@
-FROM node:alpine
+FROM node:lts-alpine
 WORKDIR /app
-COPY package.json ./
-COPY package-lock.json ./
-COPY ./ ./
+COPY package*.json ./
+COPY . .
 RUN apk add --no-cache --virtual build-essential \
           python3 \
           py3-pip \

@@ -1,6 +1,6 @@
 # Setup and build the client
-FROM node:16-alpine as client-build
-WORKDIR /usr/app/
+FROM node:lts-alpine as client-build
+WORKDIR /app/
 COPY package*.json ./
 RUN npm install -qy
 COPY . .
@@ -10,6 +10,6 @@ RUN npm run build
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
 WORKDIR /usr/app/
-COPY --from=client-build /usr/app/build/ .
+COPY --from=client-build /app/build/ .
 
 EXPOSE 80
