@@ -6,22 +6,22 @@ function App() {
 
   const handleClick = async () => {
     const response = await axios.post("/api/door");
-    console.log(response.data)
     setData(response.data);
   };
 
   return (
-    <div className="">
-      <header>
+    <div className="flex">
+      <div className="flex w-full h-full items-center justify-center">
+
         <button
           type="button"
-          className=""
+          className="border rounded m-5 py-6 px-8 bg-blue-500 text-white text-xl"
           onClick={() => handleClick()}
-        >
-          Toggle
+          >
+          Push
         </button>
         {data && (<p>{JSON.stringify(data)}</p>)}
-      </header>
+          </div>
     </div>
   );
 }
