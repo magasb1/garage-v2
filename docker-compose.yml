@@ -31,7 +31,9 @@ services:
   
   db:
     container_name: db
-    image: mongo:bionic
+    build:
+      dockerfile: Dockerfile
+      context: ./db
     restart: unless-stopped
     ports:
       - 27017:27017
