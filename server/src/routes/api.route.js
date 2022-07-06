@@ -1,30 +1,26 @@
-import { Router } from 'express';
-import checkAuth from '../middleware/auth-check';
+import { Router } from "express";
+import checkAuth from "../middleware/auth-check";
 const router = new Router();
 
-router.route("/door").post(async (req, res) => {
+/* router.route("/door").post(async (req, res) => {
     res.status(200).json({ status: "ok", message: "Door triggered"})
-})
+}) */
 
-/*
-import { Gpio } from 'onoff';
-// const Gpio = require('onoff').Gpio
- router.route("/door").post(async (req, res) => {
+import { Gpio } from "onoff";
 
-  const RELAY_PIN = process.env.RELAY_GPIO_PIN || 4
-  const TIMEOUT = process.env.RELAY_TIMEOUT || 500
-  const relay = new Gpio(RELAY_PIN, 'high');
+router.route("/door").post(async (req, res) => {
+  const RELAY_PIN = process.env.RELAY_GPIO_PIN || 4;
+  const TIMEOUT = process.env.RELAY_TIMEOUT || 500;
+  const relay = new Gpio(RELAY_PIN, "high");
 
-  relay.write(1)
+  relay.write(1);
   setTimeout(() => {
-    relay.write(0)
+    relay.write(0);
     setTimeout(() => {
-      relay.unexport()
-    }, TIMEOUT)
-  }, TIMEOUT)
-  res.status(200).json({ status: "ok", message: "Door triggered" })
+      relay.unexport();
+    }, TIMEOUT);
+  }, TIMEOUT);
+  res.status(200).json({ status: "ok", message: "Door triggered" });
+});
 
-}); 
-*/
-
-module.exports = router
+module.exports = router;
