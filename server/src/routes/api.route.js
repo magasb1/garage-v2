@@ -1,5 +1,4 @@
 import { Router } from "express";
-import checkAuth from "../middleware/auth-check";
 const router = new Router();
 
 /* router.route("/door").post(async (req, res) => {

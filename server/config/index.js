@@ -3,4 +3,4 @@ const config = {
     jwtSecret: "somesecretnooneknows!"
 };
 
-export default config
+module.exports = config

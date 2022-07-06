@@ -31,7 +31,7 @@ services:
   
   db:
     container_name: db
-    image: mongo:latest
+    image: mangoraft/mongodb-arm
     restart: unless-stopped
     ports:
       - 27017:27017
