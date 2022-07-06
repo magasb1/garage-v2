@@ -1,8 +1,15 @@
-const express = require("express");
-const Gpio = require('onoff').Gpio
-const router = express.Router();
+import { Router } from 'express';
+import checkAuth from '../middleware/auth-check';
+const router = new Router();
 
-router.route("/").post(async (req, res) => {
+router.route("/door").post(async (req, res) => {
+    res.status(200).json({ status: "ok", message: "Door triggered"})
+})
+
+/*
+import { Gpio } from 'onoff';
+// const Gpio = require('onoff').Gpio
+ router.route("/door").post(async (req, res) => {
 
   const RELAY_PIN = process.env.RELAY_GPIO_PIN || 4
   const TIMEOUT = process.env.RELAY_TIMEOUT || 500
@@ -17,6 +24,7 @@ router.route("/").post(async (req, res) => {
   }, TIMEOUT)
   res.status(200).json({ status: "ok", message: "Door triggered" })
 
-});
+}); 
+*/
 
 module.exports = router

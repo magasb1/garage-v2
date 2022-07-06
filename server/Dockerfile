@@ -7,5 +7,5 @@ RUN apk add --virtual build-essential \
           py3-pip \
           make \
           g++
-RUN npm i
+RUN npm i && npm run build
 CMD ["npm", "run", "start"]

@@ -1,5 +1,8 @@
 version: '3.8'
 
+volumes:
+  db:
+  
 services:
   server:
     container_name: server
@@ -12,6 +15,9 @@ services:
       - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
       - /sys/class/gpio:/sys/class/gpio
       # https://stackoverflow.com/a/53626586
+    depends_on:
+      - db
+  
   client:
     container_name: client
     restart: unless-stopped
@@ -22,3 +28,12 @@ services:
       - 3000:80
     depends_on:
       - server
+  
+  db:
+    container_name: db
+    image: mongo:latest
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    volumes:
+      - db:/data/db
