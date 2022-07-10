@@ -10,23 +10,16 @@ const checkAuth = (req, res, next) => {
   }
 
   const token = req.headers.authorization.split(' ')[1];
-
   verify(token, config.jwtSecret, async (err, decoded) => {
-    if (err) {
-      return unauthorized();
-    }
-
-    const { sub: userId } = decoded;
-
+    if (err) return unauthorized();
+    
     try {
-      const user = await mongoose.model('User').findById(userId);
-
-      if (!user) {
-        return unauthorized();
-      } else {
-        req.user = user;
-        next();
-      }
+      const { username, exp } = decoded;
+      if (exp < Date.now() / 1000) return unauthorized();
+      const user = await mongoose.model('User').findOne({username});
+      if (!user) return unauthorized();
+      req.user = user;
+      next();
     } catch (e) {
       unauthorized();
     }

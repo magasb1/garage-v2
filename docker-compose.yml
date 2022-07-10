@@ -18,6 +18,7 @@ services:
     environment:
       - DB_URL=value
       - JWT_SECRET=value
+      - REFRESH_SECRET=value
   
   client:
     container_name: client
@@ -29,14 +30,3 @@ services:
       - 3000:80
     depends_on:
       - server
-  
-  db:
-    container_name: db
-    build:
-      dockerfile: Dockerfile
-      context: ./db
-    restart: unless-stopped
-    ports:
-      - 27017:27017
-    volumes:
-      - db:/data/db

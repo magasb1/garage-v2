@@ -1,9 +1,11 @@
 import express from 'express';
 import cors  from 'cors';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import mongoose from 'mongoose';
 import morgan from 'morgan';
 import passport from 'passport';
+
 
 import config from '../config'
 import connect from './models';
@@ -16,8 +18,9 @@ import getLocalLoginStrategy from './passport/local-login';
 connect(config.dbUri);
 
 const app = express();
-app.use(morgan('dev'));
+app.use(morgan('common'));
 app.use(cors());
+app.use(cookieParser());
 app.use(bodyParser.json());
 
 const User = mongoose.model('User');

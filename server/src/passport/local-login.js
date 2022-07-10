@@ -3,6 +3,12 @@ import { Strategy as PassportLocalStrategy } from 'passport-local';
 
 import config from '../../config'
 
+function createAccessToken (user) {
+  return sign({ username: user.username }, config.jwtSecret, {
+    expiresIn: "1m",
+  });
+};
+
 const getStrategy = (User) => new PassportLocalStrategy({
   usernameField: 'username',
   passwordField: 'password',
@@ -22,9 +28,7 @@ const getStrategy = (User) => new PassportLocalStrategy({
       return done({code: 'INCORRECT_CREDENTIALS'});
     }
 
-    done(null, sign({ sub: user._id }, config.jwtSecret), {
-      username: user.username
-    });
+    done(null, user, createAccessToken(user));
   } catch (e) {
     console.error(e);
     done({code: 'FORM_SUBMISSION_FAILED', info: e});
