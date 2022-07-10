@@ -1,7 +1,7 @@
 version: '3.8'
 
 volumes:
-  acme-certs:
+  letsencrypt:
   
 services:
   server:
@@ -31,51 +31,43 @@ services:
     depends_on:
       - server
     labels:
-      - 'traefik.enable=true'
-      - 'traefik.http.routers.client.rule=(Host(`mydomain.com`) || Host(`www.mydomain.com`))' # insert domain
-      - 'traefik.http.routers.client.entrypoints=websecure'
-      - 'traefik.http.routers.client.tls.certresolver=letsencryptresolver'
-      - 'traefik.http.routers.client.service=clientservice'
-      - 'traefik.http.services.clientservice.loadbalancer.server.port=80'
+      - traefik.http.routers.https.rule=Host(`${DOMAIN}`)
+      - traefik.http.routers.https.entrypoints=https
+      - traefik.http.routers.https.tls=true
+      - traefik.http.routers.https.tls.certresolver=${CERT_RESOLVER}
     
-
-  reverse-proxy:
-    image: traefik:2.3
+  traefik:
+    image: traefik:2.4.8
     command:
-    - '--api=true'
-    - '--api.dashboard=true'
-    - '--providers.docker.endpoint=unix:///var/run/docker.sock'
-    - '--providers.docker.exposedbydefault=false'
-    - '--entrypoints.web.address=:80'
-    - '--entrypoints.websecure.address=:443'
-    - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge=true'
-    - '--certificatesresolvers.letsencryptresolver.acme.httpchallenge.entrypoint=web'
-    - '--certificatesresolvers.letsencryptresolver.acme.email=email@example.com' # Put in your email (the email associated with your domain name)
-    - '--certificatesresolvers.letsencryptresolver.acme.storage=/letsencrypt/acme.json'
+      # Try to enable this if something isn't working. 
+      # Chances are, Traefik will tell you why.
+      # Be careful in production as it exposes the traffic you might not want to expose.
+      #--log.level=DEBUG
+      - --entrypoints.http.address=:80
+      - --entrypoints.https.address=:443
+      - --providers.docker=true
+      - --api=true
+      # LetsEncrypt Staging Server - uncomment when testing
+      # - --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
+      - --certificatesresolvers.letsencrypt.acme.email=${EMAIL}
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+    labels:
+      # Redirect all HTTP traffic to HTTPS
+      - traefik.http.routers.to-https.rule=HostRegexp(`{host:.+}`)
+      - traefik.http.routers.to-https.entrypoints=http
+      - traefik.http.routers.to-https.middlewares=to-https
+      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
+      - traefik.http.routers.traefik.entrypoints=https
+      - traefik.http.routers.traefik.middlewares=auth
+      - traefik.http.routers.traefik.service=api@internal
+      - traefik.http.routers.traefik.tls=true
+      - traefik.http.routers.traefik.tls.certresolver=${CERT_RESOLVER}
+      - traefik.http.middlewares.to-https.redirectscheme.scheme=https
     ports:
-    - 80:80
-    - 443:443
+      - 80:80
+      - 443:443
     volumes:
-    - acme-certs:/letsencrypt
-    - /var/run/docker.sock:/var/run/docker.sock:ro
-    deploy:
-      placement:
-        constraints:
-        - node.role == manager
-      labels:
-      - 'traefik.enable=true'
-      # HTTP Catchall for redirecting HTTP -> HTTPS
-      - 'traefik.http.routers.http-catchall.rule=PathPrefix(`/`)'
-      - 'traefik.http.routers.http-catchall.entrypoints=web'
-      - 'traefik.http.routers.http-catchall.middlewares=redirect-to-https'
-      - 'traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https'
-      # Traefik dashboard
-      - 'traefik.http.routers.traefik.rule=(Host(`mydomain.com`) || Host(`www.mydomain.com`)) && (PathPrefix(`/traefik`) || PathPrefix(`/api`))' # Put in your domain
-      - 'traefik.http.routers.traefik.entrypoints=websecure'
-      - 'traefik.http.routers.traefik.tls.certresolver=letsencryptresolver'
-      - 'traefik.http.routers.traefik.service=api@internal'
-      - 'traefik.http.services.api@internal.loadbalancer.server.port=8080' # Required in swarms, https://doc.traefik.io/traefik/v2.0/routing/providers/docker/#services
-      # - 'traefik.http.routers.traefik.middlewares=traefik-auth'
-      # - 'traefik.http.middlewares.traefik-auth.basicauth.users=admin:$$apr1$$8EVjn/nj$$GiLUZqcbueTFeD23SuB6x0' # username: admin, password: admin
-      - 'traefik.http.routers.traefik.middlewares=strip'
-      - 'traefik.http.middlewares.strip.stripprefix.prefixes=/traefik'
+      - letsencrypt:/letsencrypt
+      - /var/run/docker.sock:/var/run/docker.sock:ro
