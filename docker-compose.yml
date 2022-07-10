@@ -26,8 +26,6 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./client
-    ports:
-      - 3000:80
     depends_on:
       - server
     labels:
@@ -66,7 +64,7 @@ services:
       - traefik.http.routers.traefik.tls.certresolver=${CERT_RESOLVER}
       - traefik.http.middlewares.to-https.redirectscheme.scheme=https
     ports:
-      - 80:80
+      - 3000:80
       - 443:443
     volumes:
       - letsencrypt:/letsencrypt
