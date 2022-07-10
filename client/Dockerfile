@@ -1,4 +1,4 @@
-FROM nginx:lts-alpine
+FROM nginx:alpine
 
 ARG CERTBOT_EMAIL=info@domain.com
 ARG DOMAIN_LIST
