@@ -36,6 +36,8 @@ services:
     
   traefik:
     image: traefik:2.4.8
+    container_name: traefik
+    hostname: traefik
     command:
       # Try to enable this if something isn't working. 
       # Chances are, Traefik will tell you why.
