@@ -1,7 +1,10 @@
-FROM nginx:alpine
+FROM nginx:lts-alpine
 
 ARG CERTBOT_EMAIL=info@domain.com
 ARG DOMAIN_LIST
+
+COPY ./build /app
+COPY nginx.conf /etc/nginx/nginx.conf
 
 RUN apk add certbot certbot-nginx \
     && mkdir /etc/letsencrypt \
