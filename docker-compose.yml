@@ -1,7 +1,7 @@
 version: '3.8'
 
 volumes:
-  db:
+  letsencrypt:
   
 services:
   server:
@@ -26,7 +26,13 @@ services:
     build:
       dockerfile: Dockerfile
       context: ./client
+      args:
+        - CERTBOT_EMAIL=info@example.com
+        - DOMAIN_LIST=example.com
+    volumes:
+      - letsencrypt:/etc/letsencrypt
     ports:
       - 3000:80
+      - 443:443
     depends_on:
       - server
