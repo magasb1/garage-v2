@@ -1,11 +1,11 @@
 import { Router } from "express";
 const router = new Router();
 
-router.route("/door").post(async (req, res) => {
+/* router.route("/door").post(async (req, res) => {
     res.status(200).json({ status: "ok", message: "Door triggered"})
-})
+}) */
 
-/* import { Gpio } from "onoff";
+import { Gpio } from "onoff";
 
 router.route("/door").post(async (req, res) => {
   const RELAY_PIN = process.env.RELAY_GPIO_PIN || 4;
@@ -20,6 +20,6 @@ router.route("/door").post(async (req, res) => {
     }, TIMEOUT);
   }, TIMEOUT);
   res.status(200).json({ status: "ok", message: "Door triggered" });
-}); */
+});
 
 module.exports = router;

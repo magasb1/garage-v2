@@ -11,7 +11,7 @@ const router = new Router();
 
 function createAccessToken (user) {
   return sign({ username: user.username }, config.jwtSecret, {
-    expiresIn: "1m",
+    expiresIn: "10m",
   });
 };
 
