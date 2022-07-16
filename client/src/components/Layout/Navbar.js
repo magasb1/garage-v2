@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { selectAuth } from "../../store/reducers/authSlice";
 
 
-const Navbar = ({ payload }) => {
+const Navbar = () => {
   const auth = useSelector(selectAuth);
   return (
     <>
@@ -18,7 +18,7 @@ const Navbar = ({ payload }) => {
         </div>
         <div className="gap-4">
           <span className="text-lg no-underline text-grey-darkest hover:text-blue-dark ml-2 capitalize">
-            {auth.user.username}
+            {auth?.user?.username}
           </span>
         </div>
       </nav>

@@ -39,7 +39,7 @@ const Login = () => {
                 <div className="relative">
                   <input
                     id="username"
-                    type="username"
+                    type="text"
                     name="username"
                     className="text-sm sm:text-base placeholder-gray-500 pl-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="Username"
@@ -84,7 +84,6 @@ const Login = () => {
           <div className="flex justify-center items-center mt-6">
             <a
               href="/"
-              target="_blank"
               className="inline-flex items-center font-bold text-blue-500 hover:text-blue-700 text-xs text-center"
             >
               <span className="ml-2">Register user</span>
