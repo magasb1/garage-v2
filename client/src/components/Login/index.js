@@ -1,10 +1,9 @@
 import { useState } from "react";
 import axios from "axios";
-import { selectAuth, setAuth } from "../../store/reducers/authSlice";
-import { useSelector, useDispatch } from "react-redux";
+import { setAuth } from "../../store/reducers/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
-  const auth = useSelector(selectAuth);
   const dispatch = useDispatch()
 
   const [username, setUsername] = useState();
@@ -16,8 +15,9 @@ const Login = () => {
       username,
       password,
     });
-
-    dispatch(setAuth(response.data.payload))
+    if (response.data.token && response.data.user) {
+      dispatch(setAuth(response.data.payload))
+    }
   };
 
   return (
