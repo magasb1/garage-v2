@@ -1,4 +1,4 @@
-FROM node:lts-alpine as base
+FROM node:18.6-alpine as base
 
 RUN apk add --virtual \
     build-essential \
@@ -15,7 +15,7 @@ COPY . ./
 COPY tsconfig.json ./tsconfig.json
 RUN npm run build
 
-FROM node:lts-alpine
+FROM node:18.6-alpine
 
 COPY --from=base /app/node_modules /app/node_modules
 COPY --from=base /app/dist /app/dist
