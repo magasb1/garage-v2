@@ -61,9 +61,6 @@ function App() {
             >
               <img className="" alt="garage" src="/assets/garage.png" />
             </div>
-            <pre>
-              <code>{JSON.stringify(auth, null, 2)}</code>
-            </pre>
 
             <Toaster
               position="top-center"
