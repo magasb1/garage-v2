@@ -1,6 +1,3 @@
 # Garage
 
-```
-,
-    "onoff": "^6.0.3"
-```
+`docker-compose up -d`

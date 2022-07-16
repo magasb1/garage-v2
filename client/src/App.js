@@ -1,79 +1,59 @@
-import { useState, useEffect } from "react";
 import axios from "axios";
+import createAuthRefreshInterceptor from "axios-auth-refresh";
+import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
+import { useSelector, useDispatch } from "react-redux";
+import { selectAuth, setAuth } from "./store/reducers/authSlice";
 import Login from "./components/Login";
 import Layout from "./components/Layout";
 
 function App() {
-  const axiosApiInstance = axios.create();
+  const auth = useSelector(selectAuth);
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [payload, setPayload] = useState();
-
-  const refreshTokens = async () => {
-    const response = await axios.post("/auth/refresh-token", {
-      credentials: "include",
+  const refreshToken = async () => {
+    const response = await axios.get("/api/auth/refresh", {
+      withCredentials: true,
     });
-    return response.data;
+    if (response?.data?.ok) {
+      dispatch(setAuth(response.data.payload));
+      return response.data.payload;
+    }
+    
   };
 
+  const refreshAuthLogic = async (failedRequest) => {
+    const payload = await refreshToken();
+    failedRequest.response.config.headers["Authorization"] =
+      "Bearer " + payload.token;
+    return Promise.resolve();
+  };
+
+  createAuthRefreshInterceptor(axios, refreshAuthLogic);
+
   useEffect(() => {
-    refreshTokens().then((data) => {
-      if (data.ok) {
-        setPayload(data.payload);
-        setIsAuthenticated(true);
-      }
-      setLoading(false);
-    });
+    refreshToken();
+    setLoading(false);
   }, []);
 
-  axiosApiInstance.interceptors.request.use(
-    (config) => {
-      if (payload?.token) {
-        config.headers = {
-          ...config.headers,
-          authorization: `Bearer ${payload?.token}`,
-        };
-      }
-  
-      return config;
-    },
-    (error) => Promise.reject(error)
-  );
-
-  axiosApiInstance.interceptors.response.use(
-    (response) => {
-      return response;
-    },
-    async (error) => {
-      if (error.response.status !== 401) {
-        return Promise.reject(error);
-      }
-      refreshTokens()
-      .then(data => {
-        setPayload(data.payload)
-        error.response.config.headers['authorization'] = `Bearer ${data.payload.token}`
-        return axios(error.response.config)
-      })
-      .catch(() => {})
-    }
-  );
-
   const handleClick = async () => {
-    const response = await axiosApiInstance.post("/api/door", {});
+    const response = await axios.get("/api/door", {
+      headers: {
+        Authorization: `Bearer ${auth.token}`,
+      },
+    });
     if (response?.data?.message) {
       toast.success(response.data.message);
     }
   };
 
-  if (loading) return <></>;
-
+  if (loading) return (<>Loading...</>)
   return (
     <div className="flex h-screen">
-      {isAuthenticated === false ? (
-        <Login states={{ setPayload, setIsAuthenticated }} />
+      {auth.token === null ? (
+        <Login />
       ) : (
-        <Layout payload={payload}>
+        <Layout>
           <div className="flex flex-col w-full h-full items-center justify-center bg-gray-300">
             <div
               className="p-12 border-2 bg-white border-black rounded-full shadow-xl"
@@ -81,6 +61,9 @@ function App() {
             >
               <img className="" alt="garage" src="/assets/garage.png" />
             </div>
+            <pre>
+              <code>{JSON.stringify(auth, null, 2)}</code>
+            </pre>
 
             <Toaster
               position="top-center"

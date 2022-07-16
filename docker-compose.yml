@@ -1,76 +1,36 @@
 version: '3.8'
 
 volumes:
-  letsencrypt:
-  
+  data:
+  le:
+
 services:
-  server:
-    container_name: server
+
+  app:
+    image: jc21/nginx-proxy-manager:latest
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '81:81'
+      - '443:443'
+    volumes:
+      - data:/data
+      - le:/etc/letsencrypt
+
+  api:
+    container_name: api
     restart: unless-stopped
     build:
+      context: ./api
       dockerfile: Dockerfile
-      context: ./server
-    privileged: true
-    volumes:
-      - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
-      - /sys/class/gpio:/sys/class/gpio
-      # https://stackoverflow.com/a/53626586
-    environment:
-      - DB_URL=value
-      - JWT_SECRET=value
-      - REFRESH_SECRET=value
-  
+    ports:
+      - "3001:3001"
+
   client:
     container_name: client
     restart: unless-stopped
     build:
-      dockerfile: Dockerfile
       context: ./client
-    depends_on:
-      - server
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.client.rule=Host(`${DOMAIN}`)
-      - traefik.http.routers.client.entrypoints=https
-      - traefik.http.routers.client.tls=true
-      - traefik.http.routers.client.tls.certresolver=${CERT_RESOLVER}
-      - traefik.http.routers.client.service=client-svc
-      - traefik.http.services.client-svc.loadbalancer.server.port=80
-  traefik:
-    image: traefik:2.4.8
-    container_name: traefik
-    hostname: traefik
-    command:
-      # Try to enable this if something isn't working. 
-      # Chances are, Traefik will tell you why.
-      # Be careful in production as it exposes the traffic you might not want to expose.
-      #--log.level=DEBUG
-      - --entrypoints.http.address=:80
-      - --entrypoints.https.address=:443
-      - --providers.docker=true
-      - --api=true
-      - --providers.docker.exposedbydefault=false
-      # LetsEncrypt Staging Server - uncomment when testing
-      # - --certificatesResolvers.letsencrypt.acme.caServer=https://acme-staging-v02.api.letsencrypt.org/directory
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=http
-      - --certificatesresolvers.letsencrypt.acme.email=${EMAIL}
-      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-    labels:
-      # Redirect all HTTP traffic to HTTPS
-      - traefik.http.routers.to-https.rule=HostRegexp(`{host:.+}`)
-      - traefik.http.routers.to-https.entrypoints=http
-      - traefik.http.routers.to-https.middlewares=to-https
-      - traefik.http.routers.traefik.rule=Host(`traefik.${DOMAIN}`)
-      - traefik.http.routers.traefik.entrypoints=https
-      - traefik.http.routers.traefik.middlewares=auth
-      - traefik.http.routers.traefik.service=api@internal
-      - traefik.http.routers.traefik.tls=true
-      - traefik.http.routers.traefik.tls.certresolver=${CERT_RESOLVER}
-      - traefik.http.middlewares.to-https.redirectscheme.scheme=https
+      dockerfile: Dockerfile
     ports:
-      - 3000:80
-      - 443:443
-    volumes:
-      - letsencrypt:/letsencrypt
-      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - "3000:80"

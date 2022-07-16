@@ -1,22 +1,25 @@
 import { useState } from "react";
-import axios from 'axios';
+import axios from "axios";
+import { selectAuth, setAuth } from "../../store/reducers/authSlice";
+import { useSelector, useDispatch } from "react-redux";
 
+const Login = () => {
+  const auth = useSelector(selectAuth);
+  const dispatch = useDispatch()
 
-const Login = ({states}) => {
-    const [username, setUsername] = useState()
-    const [password, setPassword] = useState()
-    const handleSignin = async (e) => {
-        e.preventDefault()
-        const response = await axios.post('/auth/signin', {
-            username,
-            password
-        })
+  const [username, setUsername] = useState();
+  const [password, setPassword] = useState();
 
-        if (response.data?.payload){
-          states.setPayload(response.data.payload)
-          states.setIsAuthenticated(true)           
-        }
-    }
+  const handleSignin = async (e) => {
+    e.preventDefault();
+    const response = await axios.post("/api/auth/signin", {
+      username,
+      password,
+    });
+
+    dispatch(setAuth(response.data.payload))
+  };
+
   return (
     <>
       <div className="min-h-screen w-full flex flex-col items-center justify-center bg-gray-300">
@@ -40,7 +43,9 @@ const Login = ({states}) => {
                     name="username"
                     className="text-sm sm:text-base placeholder-gray-500 pl-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="Username"
-                    onChange={(e) => {setUsername(e.target.value)}}
+                    onChange={(e) => {
+                      setUsername(e.target.value);
+                    }}
                   />
                 </div>
               </div>
@@ -58,7 +63,9 @@ const Login = ({states}) => {
                     name="password"
                     className="text-sm sm:text-base placeholder-gray-500 pl-4 rounded-lg border border-gray-400 w-full py-2 focus:outline-none focus:border-blue-400"
                     placeholder="Password"
-                    onChange={(e) => {setPassword(e.target.value)}}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                    }}
                   />
                 </div>
               </div>
