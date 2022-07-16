@@ -6,7 +6,8 @@ volumes:
 
 services:
 
-  app:
+  proxy-manager:
+    container_name: proxy-manager
     image: jc21/nginx-proxy-manager:latest
     restart: unless-stopped
     ports:
