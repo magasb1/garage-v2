@@ -19,7 +19,7 @@ export const sendRefreshToken = (res: Response, token: any) => {
     res.cookie("refreshToken", token, {
         secure: process.env.NODE_ENV === "production",
         httpOnly: true,
-        maxAge: 60 * 60 * 24 * 30, // 30 days
+        maxAge: 60 * 60 * 24 * 365, // 365 days
         path: "/",
       })
   };
