@@ -23,6 +23,12 @@ services:
     build:
       context: ./api
       dockerfile: Dockerfile
+    volumes:
+      - /sys/devices/platform/soc/3f200000.gpio:/sys/devices/platform/soc/3f200000.gpio
+      - /sys/class/gpio:/sys/class/gpio
+    environment:
+      - TOKEN_SECRET=value
+      - REFRESH_TOKEN_SECRET=value
     ports:
       - "3001:3001"
 
