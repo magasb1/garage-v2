@@ -1,6 +1,4 @@
 /api/node_modules
-/api/dist
 /api/config/db/database.sqlite
 
 /client/node_modules
-/client/build
