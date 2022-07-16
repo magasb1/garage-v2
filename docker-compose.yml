@@ -38,5 +38,7 @@ services:
     build:
       context: ./client
       dockerfile: Dockerfile
+    depends_on:
+      - api
     ports:
       - "3000:80"
