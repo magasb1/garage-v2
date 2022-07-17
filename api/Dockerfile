@@ -16,6 +16,12 @@ RUN npm run build
 
 
 FROM node:18.6-alpine
+RUN apk add --virtual \
+    build-essential \
+    python3 \
+    py3-pip \
+    make \
+    g++
 COPY --from=base /app/node_modules /app/node_modules
 COPY --from=base /app/dist /app
 EXPOSE 3001
