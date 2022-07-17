@@ -5,7 +5,7 @@ import { Response } from "express";
 
 export const createAccessToken = (user: User) => {
   return sign({ id: user.id }, config.TOKEN_SECRET, {
-    expiresIn: "5s",
+    expiresIn: "1m",
   });
 };
 
