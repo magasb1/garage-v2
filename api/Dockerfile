@@ -1,4 +1,4 @@
-FROM node:18.6-alpine
+FROM node:18.6-alpine as base
 
 RUN apk add --virtual \
     build-essential \
@@ -9,9 +9,14 @@ RUN apk add --virtual \
     
 WORKDIR /app
 COPY package*.json ./
+
+COPY . ./
 RUN npm install
+RUN npm run build
 
-COPY /app/dist /app/dist
 
+FROM node:18.6-alpine
+COPY --from=base /app/node_modules /app/node_modules
+COPY --from=base /app/dist /app
 EXPOSE 3001
-CMD ["node", "/app/dist/src/app.js"]
+CMD ["node", "/app/src/app.js"]
