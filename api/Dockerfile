@@ -11,7 +11,7 @@ WORKDIR /app
 COPY package*.json ./
 
 COPY . ./
-RUN npm install
+RUN npm install --verbose
 RUN npm run build
 
 
